@@ -1,8 +1,15 @@
+![npm](https://img.shields.io/npm/v/vue-custom-range-input)
+![Vue 3](https://img.shields.io/badge/vue-3.x-yellow.svg)
+
 # Vue Custom Range Input Component
 A customizable Vue component for a range slider input. Provides flexibility to use static or dynamic steps, along with additional visual rules for better user experience.
 
 ## Installation
 You can install the component using yarn:
+```bash
+npm install vue-custom-range-inputbash
+```
+or
 ```bash
 yarn add vue-custom-range-inputbash
 ```
