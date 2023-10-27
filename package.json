@@ -22,5 +22,20 @@
   "files": [
     "dist",
     "src"
-  ]
+  ],
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "component",
+    "range"
+  ],
+  "bugs": {
+    "url": "https://github.com/AngelSlava/vue-custom-range-input/issues"
+  },
+  "homepage": "https://github.com/AngelSlava/vue-custom-range-input",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AngelSlava/vue-custom-range-input.git"
+  },
+  "author": "Viacheslav Angel <do.angelwork@gmail.com>"
 }
