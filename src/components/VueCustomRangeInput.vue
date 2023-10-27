@@ -2,11 +2,12 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
-  modelValue: number
+  modelValue: any
   min?: number
   max?: number
   steps?: any
   step?: number
+  showRule?: boolean
 }>(), {
   modelValue: () => 0,
   min: () => 0,
@@ -16,6 +17,10 @@ const props = withDefaults(defineProps<{
 })
 
 const emits = defineEmits(['update:modelValue'])
+
+const inputValue = ref(0)
+const inputRef = ref()
+const rangeWidth = ref(0)
 
 const computedSteps = computed(() => {
   if (Array.isArray(props.steps)) {
@@ -42,7 +47,26 @@ const computedProps = computed(() => {
   }
 })
 
-const inputValue = ref(0)
+const computedRuleMarkers = computed(() => {
+  if (!rangeWidth.value) return 1
+  const dif = props.max - props.min
+  const q = [1, 5, 10, 25, 50]
+  return findCount(q,rangeWidth.value / dif, 0, 75)
+})
+
+const computedRuleSubMarkers = computed(() => {
+  if (!rangeWidth.value) return 1
+  const dif = props.max - props.min
+  const q = [1, 2, 3, 5]
+  return findCount(q, rangeWidth.value / dif, 0, 10)
+})
+
+function findCount(q: number[], width: number, index: number, minWidth: number) {
+  if (width * q[index] < minWidth) {
+    return findCount(q, width, index + 1, minWidth)
+  }
+  return q[index] || 100
+}
 
 function handleChange(event: Event) {
   const value = (event.target as HTMLInputElement).value
@@ -53,7 +77,7 @@ function emitsValue(value: any) {
   if (computedSteps.value.length) {
     return emits('update:modelValue', computedSteps.value[+value])
   }
-  emits('update:modelValue', value)
+  emits('update:modelValue', +value)
 }
 
 function onModelChange(value: number) {
@@ -69,18 +93,25 @@ function onModelChange(value: number) {
 }
 
 onMounted(() => {
+  const updateWidth = () => {
+    if (inputRef.value) {
+      rangeWidth.value = inputRef.value.offsetWidth
+    }
+  }
+  window.addEventListener('resize', updateWidth)
   const unwatchHandlers = [
     watch(() => props.modelValue, onModelChange, { immediate: true })
   ]
   onBeforeUnmount(() => {
+    window.removeEventListener('resize', updateWidth)
     unwatchHandlers.forEach((unwatch) => unwatch())
   })
+  updateWidth()
 })
 </script>
 
 <template>
-  <pre>{{ props.modelValue }}</pre>
-  <div class="vue-custom-range-input">
+  <div ref="inputRef" class="vue-custom-range-input">
     <input
       :value="inputValue"
       :min="computedProps.min"
@@ -91,63 +122,98 @@ onMounted(() => {
       @input="handleChange"
     />
     <div class="vue-custom-range-input__labels">
-      <ul>
-        <li v-for="(value, index) of computedSteps" :key="index" @click="emitsValue(index)">
-          <span>
+      <ul :class="[{ 'show-rule': showRule }]">
+        <template v-if="computedSteps?.length">
+          <li
+            v-for="(value, index) of computedSteps"
+            :key="index"
+            :class="['marker', { active: value === modelValue }]"
+            @click="emitsValue(index)"
+          >
+          <span class="vue-custom-range-input__label">
             <template v-if="!$slots.label">
               {{ value }}
             </template>
             <slot name="label" :value="value" />
           </span>
-        </li>
+          </li>
+        </template>
+        <template v-else>
+          <li
+            v-for="(n, index) of (max - min + 1)"
+            :key="n"
+            :class="{ marker : !(index%computedRuleMarkers), 'sub-marker': !(index%computedRuleSubMarkers), active: min + index === modelValue }"
+            @click="!(index%computedRuleMarkers) ? emitsValue(min + index) : null"
+          >
+            <span v-if="!(index%computedRuleMarkers) || (max === min + index)">{{ min + index }}</span>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
-
-  <pre>{{ computedProps }}</pre>
-  <pre>{{ computedSteps }}</pre>
 </template>
 
 <style lang="scss" scoped>
 .vue-custom-range-input {
   display: flex;
   flex-direction: column;
-  background: greenyellow;
   width: 100%;
   input {
     margin: 0;
     padding: 0;
   }
   &__labels {
+    color: black;
     ul {
       list-style: none;
       display: flex;
       margin: 0;
       padding: 0;
       justify-content: space-between;
+      &.show-rule {
+        li {
+          &.marker {
+            cursor: pointer;
+          }
+          &:before {
+            content: '';
+            height: 1rem;
+            width: 2px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: gray;
+          }
+          &:not(.marker):not(.sub-marker):not(:last-child) {
+            display: none;
+          }
+          &.sub-marker:not(.marker):not(:last-child):before {
+            height: 0.5rem;
+          }
+        }
+      }
       li {
-        width: 10px;
-        height: 2rem;
-        background: red;
+        width: 6px;
         position: relative;
+        display: flex;
         span {
-          position: absolute;
-          white-space: nowrap;
-          top: 100%;
-          left: 50%;
-          transform: translateX(-50%);
+          display: flex;
+          width: 0;
+          padding-top: 1rem;
+          align-items: center;
+          justify-content: center;
+          line-height: 1.5;
         }
         &:first-child {
+          justify-content: left;
           span {
-            left: 0;
-            transform: none;
+            justify-content: left;
           }
         }
         &:last-child {
+          justify-content: right;
           span {
-            right: 0;
-            left: initial;
-            transform: none;
+            justify-content: right;
           }
         }
       }

@@ -1,8 +1,9 @@
 {
   "name": "vue-custom-range-inputt",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "1.0.1",
   "type": "module",
+  "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
@@ -17,5 +18,9 @@
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vue-tsc": "^1.8.5"
-  }
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
 }

@@ -1,18 +1,66 @@
-# Vue 3 + TypeScript + Vite
+# Vue Custom Range Input Component
+A customizable Vue component for a range slider input. Provides flexibility to use static or dynamic steps, along with additional visual rules for better user experience.
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Installation
+You can install the component using yarn:
+```bash
+yarn add vue-custom-range-inputbash
+```
 
-## Recommended IDE Setup
+## Usage
+First, import the component into your Vue file:
+```javascript
+import VueCustomRangeInput from 'vue-custom-range-input';
+```
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+Then, register the component:
+```javascript
+export default {
+  components: {
+    VueCustomRangeInput
+  }
+}
+```
 
-## Type Support For `.vue` Imports in TS
+Now you can use the component in your template:
+```html
+<VueCustomRangeInput v-model="yourValue" :min="minValue" :max="maxValue" :step="stepValue" />
+```
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## Props
+- `modelValue` (required): The value bound to the slider.
+- `min` (optional, default: 0): The minimum value of the slider.
+- `max` (optional, default: 100): The maximum value of the slider.
+- `steps` (optional, default: []): An array of values for discrete steps.
+- `step` (optional, default: 1): The step interval between values.
+- `showRule` (optional, default: false): Shows the rule markers when set to true.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Events
+- `update:modelValue`: Emits the current value of the slider when it changes.
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## Slots
+- `label`: A slot to customize the label of each step. Receives value as a prop.
+
+## Styling
+You can style the component by targeting the classes used internally. The component uses SCSS for styling, and the styles are scoped to the component.
+
+Here is an example of how you might override the styles:
+```scss
+<style lang="scss">
+.vue-custom-range-input {
+  &__labels {
+    ul {
+      li {
+        // your custom styles here
+      }
+    }
+  }
+}
+</style>
+```
+
+## License
+This project is licensed under the MIT License.
+
+## Author
+Viacheslav Angel

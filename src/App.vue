@@ -3,17 +3,25 @@ import VueCustomRangeInput from './components/VueCustomRangeInput.vue'
 import { ref } from 'vue'
 
 const value = ref(10)
+const value2 = ref('John')
 </script>
 
 <template>
-  <pre>{{ value }}</pre>
   <vue-custom-range-input
     v-model="value"
-    :steps="[{ foo: 'bar' }, { foo: 'rab' }, 'some']"
-  >
-    <template #label="{ value }">
-      {{ value.foo || value }}
-    </template>
-  </vue-custom-range-input>
+    :min="-7"
+    :max="80"
+    show-rule
+  />
+
+  <vue-custom-range-input
+    v-model="value2"
+    :steps="['John', 'Sam', 'Marta']"
+    show-rule
+  />
 </template>
+
+<style lang="scss" scoped>
+
+</style>
 
