@@ -7,11 +7,11 @@ A customizable Vue component for a range slider input. Provides flexibility to u
 ## Installation
 You can install the component using yarn:
 ```bash
-npm install vue-custom-range-inputbash
+npm install vue-custom-range-input
 ```
 or
 ```bash
-yarn add vue-custom-range-inputbash
+yarn add vue-custom-range-input
 ```
 
 ## Usage
